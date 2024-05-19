@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -21,19 +22,25 @@ import { Input } from "@/components/ui/input";
 
 import { createUserResource } from "../actions";
 
-export default function CreateResourceForm() {
-  const form = useForm<z.infer<typeof insertUserResourceSchema>>({
+type InsertUserResourceType = z.infer<typeof insertUserResourceSchema>;
+
+export const CreateResourceDialog = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const form = useForm<InsertUserResourceType>({
     resolver: zodResolver(insertUserResourceSchema),
   });
 
-  const onSubmit = async (values: z.infer<typeof insertUserResourceSchema>) => {
+  const onSubmit = async (values: InsertUserResourceType) => {
     await createUserResource(values);
-    form.reset();
+    setIsOpen(false);
   };
 
   return (
     <Dialog
-      onOpenChange={() => {
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
         form.reset();
       }}
     >
@@ -65,4 +72,4 @@ export default function CreateResourceForm() {
       </DialogContent>
     </Dialog>
   );
-}
+};

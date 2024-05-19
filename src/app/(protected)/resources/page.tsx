@@ -4,7 +4,8 @@ import { auth, sessionSchemaWithId } from "@/auth";
 import { db } from "@/db";
 import { userResource } from "@/db/schemas";
 
-import CreateResourceForm from "./components/CreateResourceForm";
+import { CreateResourceDialog } from "./components/CreateResourceDialog";
+import { ResourceCard } from "./components/ResourceCard";
 
 export default async function Page() {
   const session = sessionSchemaWithId.parse(await auth());
@@ -20,16 +21,16 @@ export default async function Page() {
     <div>
       <h1>Resources</h1>
       {resources.length > 0 ? (
-        <ul>
+        <div className="grid grid-cols-1 gap-4 px-4 py-2 md:grid-cols-2 lg:grid-cols-3">
           {resources.map((resource) => (
-            <li key={resource.id}>{resource.name}</li>
+            <ResourceCard key={resource.id} resource={resource} />
           ))}
-        </ul>
+        </div>
       ) : (
         <div>No resources</div>
       )}
 
-      <CreateResourceForm />
+      <CreateResourceDialog />
     </div>
   );
 }

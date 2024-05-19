@@ -38,3 +38,7 @@ export const deleteUserResourceSchema = updateUserResourceSchema
     id: true,
   })
   .required();
+
+export const userResourceSchema = createSelectSchema(userResource);
+
+export type UserResource = z.infer<typeof userResourceSchema>;

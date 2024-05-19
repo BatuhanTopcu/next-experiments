@@ -2,11 +2,15 @@
 
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
 
-import { authActionClient } from "@/actions";
+import { authActionClient } from "@/actions/actionClient";
 import { db } from "@/db";
-import { insertUserResourceSchema, userResource } from "@/db/schemas";
+import {
+  deleteUserResourceSchema,
+  insertUserResourceSchema,
+  updateUserResourceSchema,
+  userResource,
+} from "@/db/schemas";
 
 export const createUserResource = authActionClient
   .metadata({ actionName: "createUserResource" })
@@ -23,25 +27,25 @@ export const createUserResource = authActionClient
     revalidatePath("/resources");
   });
 
-export const deleteUserResource = authActionClient
-  .metadata({ actionName: "deleteUserResource" })
-  .schema(z.string())
+export const updateUserResource = authActionClient
+  .metadata({ actionName: "updateUserResource" })
+  .schema(updateUserResourceSchema)
   .action(async ({ parsedInput, ctx: { userId } }) => {
     await db
-      .delete(userResource)
-      .where(and(eq(userResource.userId, userId), eq(userResource.id, parsedInput)))
+      .update(userResource)
+      .set(parsedInput)
+      .where(and(eq(userResource.userId, userId), eq(userResource.id, parsedInput.id)))
       .execute();
 
     revalidatePath("/resources");
   });
 
-export const updateUserResource = authActionClient
-  .metadata({ actionName: "updateUserResource" })
-  .schema(z.object({ id: z.string(), name: z.string().min(8).max(255) }))
+export const deleteUserResource = authActionClient
+  .metadata({ actionName: "deleteUserResource" })
+  .schema(deleteUserResourceSchema)
   .action(async ({ parsedInput, ctx: { userId } }) => {
     await db
-      .update(userResource)
-      .set({ name: parsedInput.name })
+      .delete(userResource)
       .where(and(eq(userResource.userId, userId), eq(userResource.id, parsedInput.id)))
       .execute();
 
