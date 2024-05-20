@@ -1,4 +1,26 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:drizzle/recommended", "prettier"],
-  "plugins": ["drizzle, prettier-plugin-tailwindcss"]
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:drizzle/recommended",
+    "prettier",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": ["drizzle", "react-compiler"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "out/",
+    "next.config.*",
+    "tailwind.config.*",
+    "postcss.config.*"
+  ],
+  "rules": {
+    "react-compiler/react-compiler": "error",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "react/no-unescaped-entities": "off"
+  }
 }
